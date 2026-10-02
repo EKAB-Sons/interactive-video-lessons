@@ -1,21 +1,36 @@
-# Interactive Generative Video Lessons
+# Showloop — Interactive Visual Learning Platform
 
-## Project Context & Abstract
+## Prosit 1 framing and runnable stub
 
-**Course:** ICS 591: Capstone: Building Secure Intelligent Computing Systems
-**Team:** Thomas Kojo Quarshie, Naa Lamle Boye, Nicole Nanka Bruce, Elijah Boateng
+We are framing Showloop as a student-controlled visual lesson: a student pauses a lesson, asks by text/voice/pointer, receives an explanation connected to the current scene, and resumes coherently. In our derivative fixture, the student selects `graph.tangent` on a distance–time graph and asks why its slope is instantaneous speed. The proposed branch shows a secant approaching the tangent, then returns to the saved lesson node.
 
-**Concept:**
-Interactive Generative Video Lessons is a learning product designed to generate interactive video lessons from student-supplied context, such as prompts or documents. It is tailored for students in a Ghanaian learning setting, with an initial focus on mathematics and programming.
+This repository is deliberately narrow. It does not implement voice recognition, ingestion, a real provider, rendering, student data, or educational evaluation. The learned planning boundary is exactly the **Base Lesson Planning Engine** and **Lesson Adaptation Builder**. Both propose plans; they cannot render, commit state, or send unchecked content. A hosted Foundation Model Provider is outside our platform boundary.
 
-**Interaction Model:**
-Students can pause the lesson to ask questions via speech, text, or by visually selecting and marking an area on the screen. The system contextualizes the question against the current visual, adapts the explanation (for example, dynamically re-rendering a fraction explanation to use mangoes), and seamlessly resumes the lesson.
+| Capability | Status |
+|---|---|
+| Derivatives graph, object IDs, context packet, checks, branch/return, JSONL trace | Implemented local stub |
+| Planner output | Deterministic mock (`mock-planner`, no API key) |
+| Animation, speech, retrieval, ingestion, real provider, evaluation | Planned |
 
-**Core Features:**
-- Context-to-lesson generation
-- Interruptible playback
-- Illustrative visual continuations
-- Robust lesson player
+The stub demonstrates state-safe interruption handling, not rendering or learning benefit. It cannot establish educational effectiveness or provider safety.
+
+## Run
+
+From a fresh checkout with Python 3.10+:
+
+```powershell
+cd backend
+python -m app.main success --trace ..\examples\derivatives-demo.jsonl
+python -m app.main unknown
+python -m app.main malformed
+python -m app.main unsupported
+python -m app.main stale
+python -m app.main timeout
+python -m unittest discover -s tests -v
+python -m compileall app
+```
+
+The committed trace is generated from team-authored fixture content. `scene_update.rendered` is always `false`: it is checked compiler input, not an animation. See [architecture](docs/architecture/README.md), [contracts](docs/interfaces/contracts.md), [monitoring](docs/monitoring.md), [decisions](docs/decisions.md), [source inventory](docs/prosit-1/README.md), and [open issues](docs/open-issues.md). Prosit 2 must bound topics/operations, select a provider and verification approach, settle data permissions, and define recruitment/comparators.
 
 ## Architecture & Technical Scope
 

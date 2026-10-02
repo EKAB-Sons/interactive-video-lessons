@@ -1,0 +1,6 @@
+{"event": "showloop.trace", "lesson_id": "derivatives-intro-v1", "node_id": "distance-time-tangent", "request_id": "request-demo-001", "scene_version": 7, "selected_object_ids": ["graph.tangent"], "stage": "interaction_capture", "status": "received"}
+{"config_version": "mock-v1", "event": "showloop.trace", "lesson_id": "derivatives-intro-v1", "node_id": "distance-time-tangent", "planner_id": "mock-planner", "request_id": "request-demo-001", "scene_version": 7, "stage": "context_builder", "status": "assembled"}
+{"config_version": "mock-v1", "elapsed_ms": 0.021, "event": "showloop.trace", "planner_id": "mock-planner", "request_id": "request-demo-001", "stage": "planner", "status": "adaptation_proposal"}
+{"event": "showloop.trace", "request_id": "request-demo-001", "stage": "verification", "status": "accepted", "verification_status": "accepted"}
+{"event": "showloop.trace", "request_id": "request-demo-001", "return_anchor": {"node_id": "distance-time-tangent", "scene_version": 7}, "scene_version": 8, "stage": "state_commit", "status": "committed", "transition": "lesson_to_explanation_branch"}
+{"event": "showloop.trace", "final_status": "resumed", "request_id": "request-demo-001", "return_anchor": {"node_id": "distance-time-tangent", "scene_version": 7}, "stage": "resume", "status": "completed", "transition": "explanation_branch_to_return_anchor"}
