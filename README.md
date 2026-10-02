@@ -1,8 +1,8 @@
-# Showloop — Interactive Visual Learning Platform
+# Interactive Visual Learning Platform
 
 ## Prosit 1 framing and runnable stub
 
-We are framing Showloop as a student-controlled visual lesson: a student pauses a lesson, asks by text/voice/pointer, receives an explanation connected to the current scene, and resumes coherently. In our derivative fixture, the student selects `graph.tangent` on a distance–time graph and asks why its slope is instantaneous speed. The proposed branch shows a secant approaching the tangent, then returns to the saved lesson node.
+We are framing this platform as a student-controlled visual lesson: a student pauses a lesson, asks by text/voice/pointer, receives an explanation connected to the current scene, and resumes coherently. In our derivative fixture, the student selects `graph.tangent` on a distance–time graph and asks why its slope is instantaneous speed. The proposed branch shows a secant approaching the tangent, then returns to the saved lesson node.
 
 This repository is deliberately narrow. It does not implement voice recognition, ingestion, a real provider, rendering, student data, or educational evaluation. The learned planning boundary is exactly the **Base Lesson Planning Engine** and **Lesson Adaptation Builder**. Both propose plans; they cannot render, commit state, or send unchecked content. A hosted Foundation Model Provider is outside our platform boundary.
 

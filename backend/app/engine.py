@@ -38,7 +38,7 @@ class MockPlanner:
             {"type":"set_narration", "text":"A secant approaches the tangent; its slope approaches instantaneous speed."}]}
 
 def _trace(events: list[dict[str, Any]], request_id: str, stage: str, status: str, **fields: Any) -> None:
-    events.append({"event":"showloop.trace", "request_id":request_id, "stage":stage, "status":status, **fields})
+    events.append({"event":"interactive_video_lessons.trace", "request_id":request_id, "stage":stage, "status":status, **fields})
 
 def _structural_error(p: dict[str, Any], request_id: str) -> str | None:
     required = {"kind","request_id","planner_id","config_version","scene_version","source_refs","return_anchor","operations"}

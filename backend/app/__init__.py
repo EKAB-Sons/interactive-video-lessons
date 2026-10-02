@@ -1,1 +1,1 @@
-"""Showloop's local Prosit 1 lesson-interruption stub."""
+"""Local Prosit 1 lesson-interruption stub."""
