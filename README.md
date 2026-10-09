@@ -1,4 +1,4 @@
-# Showloop — Interactive Visual Learning Platform
+# Interactive Visual Learning Platform
 
 ## Prosit 1 framing and runnable stub
 
