@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivl.ekab-sons.dev/schemas/scene_graph.schema.json",
+  "title": "Scene graph (verifier's view)",
+  "description": "The minimal view of the live scene the Verification and Policy Layer needs. It is the state the orchestrator holds; planners never produce it. The Scene DSL owner (compiler/renderer) may carry richer properties, but every field here must agree with the compiler's representation.",
+  "type": "object",
+  "required": ["lesson_id", "node_id", "scene_version", "topic", "objects", "source_refs"],
+  "additionalProperties": true,
+  "properties": {
+    "lesson_id": { "type": "string", "minLength": 1 },
+    "node_id": { "type": "string", "minLength": 1, "description": "Current lesson-graph node." },
+    "scene_version": { "type": "integer", "minimum": 0, "description": "Monotonic version. A proposal must name the version it was generated against." },
+    "topic": { "type": "string", "minLength": 1, "description": "Must be one of the bounded topics in contracts/topics.json." },
+    "objective": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "description": "Known lesson-graph node IDs. Return anchors must name one of these.",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "objects": {
+      "type": "object",
+      "description": "Scene objects keyed by object ID. The deterministic hit-test returns these IDs.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["curve", "line", "point", "label", "axis", "region", "text", "code"] },
+          "expression": { "type": "string", "description": "For curves: the function expression in the variable `var`." },
+          "var": { "type": "string" },
+          "domain": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+          "origin": { "type": "string", "enum": ["base", "branch"], "default": "base", "description": "Objects created in an explanation branch may be removed; base-lesson objects may not." }
+        },
+        "additionalProperties": true
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "description": "Approved source references available to this lesson.",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivl.ekab-sons.dev/schemas/verification_result.schema.json",
+  "title": "Verification result (Verification and Policy Layer output)",
+  "description": "What the orchestrator receives for every proposal. The status is the policy decision; issues and checked claims are the evidence. Only an 'accepted' result carries an applicable scene update.",
+  "type": "object",
+  "required": ["request_id", "status", "attempt", "verifier_version", "issues", "checked_claims", "elapsed_ms"],
+  "properties": {
+    "request_id": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["accepted", "rejected", "revision_requested", "needs_clarification", "declined", "degraded"],
+      "description": "accepted: apply. rejected: unrepairable, do not retry with the same context. revision_requested: one bounded revision permitted (B.5). needs_clarification: defer to the student. declined: revision also failed; a checked fallback may be attached. degraded: deadline passed; fallback attached."
+    },
+    "attempt": { "type": "integer", "minimum": 1, "maximum": 2 },
+    "verifier_version": { "type": "string", "minLength": 1 },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "path", "message", "repairable"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["blocking", "warning"] },
+          "path": { "type": "string" },
+          "message": { "type": "string" },
+          "repairable": { "type": "boolean" },
+          "layer": { "type": "string", "enum": ["structural", "scene", "operations", "grounding", "maths", "safety", "policy"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "checked_claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "status": { "type": "string", "enum": ["verified", "mismatch", "unparseable", "unsupported", "error"] },
+          "claimed": {},
+          "computed": {},
+          "detail": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "scene_update": {
+      "type": "object",
+      "description": "Present only when status is accepted. Narration placeholders are already substituted with verified values.",
+      "required": ["kind", "base_scene_version", "operations", "rendered"],
+      "properties": {
+        "kind": { "const": "scene_update" },
+        "base_scene_version": { "type": "integer", "minimum": 0 },
+        "operations": { "type": "array", "items": { "type": "object" } },
+        "return_anchor": { "type": "object" },
+        "rendered": { "const": false }
+      }
+    },
+    "revision_instruction": { "$ref": "revision_instruction.schema.json" },
+    "clarification": {
+      "type": "object",
+      "properties": {
+        "question": { "type": "string" },
+        "candidate_object_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "description": "A checked alternative per B.5: static text built only from verified claims, or an instruction to wait/retry/return.",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["checked_text", "static_frame", "offer_wait_retry_return"] },
+        "text": { "type": "string" },
+        "verified_claim_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "elapsed_ms": { "type": "number", "minimum": 0 },
+    "deadline_ms": { "type": "integer" },
+    "planner_id": { "type": "string" },
+    "config_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

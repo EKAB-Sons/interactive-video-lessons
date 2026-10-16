@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivl.ekab-sons.dev/schemas/context_packet.schema.json",
+  "title": "Context packet (into the learned boundary)",
+  "description": "What the Interaction Capture and Context Builder sends to the Lesson Adaptation Builder. The verifier needs it to bind a proposal to the state it was generated for.",
+  "type": "object",
+  "required": ["request_id", "session_id", "lesson_id", "node_id", "scene_version", "question_text", "selected_object_ids", "source_refs"],
+  "additionalProperties": true,
+  "properties": {
+    "request_id": { "type": "string", "minLength": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "lesson_id": { "type": "string", "minLength": 1 },
+    "node_id": { "type": "string", "minLength": 1 },
+    "scene_version": { "type": "integer", "minimum": 0 },
+    "question_text": { "type": "string", "maxLength": 2000 },
+    "question_modality": { "type": "string", "enum": ["text", "voice_transcript", "pointer_only"], "default": "text" },
+    "selected_object_ids": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 8 },
+    "source_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "retrieved_passages": {
+      "type": "array",
+      "description": "Passages retrieved for grounding. Each must be tagged with its provenance role so the planner and the verifier can tell data from instructions.",
+      "items": {
+        "type": "object",
+        "required": ["source_ref", "text", "role"],
+        "properties": {
+          "source_ref": { "type": "string" },
+          "text": { "type": "string", "maxLength": 8000 },
+          "role": { "type": "string", "enum": ["source_data"], "description": "Uploaded or retrieved content is always data, never instruction." },
+          "safety": {
+            "type": "object",
+            "description": "Result of the Content Ingestion and Safety scan.",
+            "properties": {
+              "injection_score": { "type": "number", "minimum": 0, "maximum": 1 },
+              "flags": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "conversation": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["role", "text"],
+        "properties": {
+          "role": { "type": "string", "enum": ["student", "tutor"] },
+          "text": { "type": "string", "maxLength": 2000 }
+        }
+      }
+    },
+    "deadline_ms": { "type": "integer", "minimum": 0, "description": "Remaining budget when the packet was assembled (B.4: useful response within 10 s)." }
+  }
+}

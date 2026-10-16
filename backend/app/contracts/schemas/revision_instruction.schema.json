@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivl.ekab-sons.dev/schemas/revision_instruction.schema.json",
+  "title": "Revision instruction (into the learned boundary)",
+  "description": "Structured feedback for the one bounded revision B.5 permits. It names the failed checks and the constraints the revision must satisfy. It never contains free-form prose from an untrusted source.",
+  "type": "object",
+  "required": ["kind", "request_id", "attempt", "failed_checks", "constraints"],
+  "properties": {
+    "kind": { "const": "revision_instruction" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "attempt": { "const": 2 },
+    "failed_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["code", "path", "message"],
+        "properties": {
+          "code": { "type": "string" },
+          "path": { "type": "string" },
+          "message": { "type": "string" },
+          "computed": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["scene_version", "allowed_operations", "known_object_ids", "approved_source_refs"],
+      "properties": {
+        "scene_version": { "type": "integer", "minimum": 0 },
+        "allowed_operations": { "type": "array", "items": { "type": "string" } },
+        "known_object_ids": { "type": "array", "items": { "type": "string" } },
+        "approved_source_refs": { "type": "array", "items": { "type": "string" } },
+        "allowed_claim_types": { "type": "array", "items": { "type": "string" } },
+        "keep_operation_indices": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "description": "Operations that passed every check; the revision may keep them unchanged." }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

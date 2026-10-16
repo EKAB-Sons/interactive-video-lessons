@@ -1,0 +1,119 @@
+{
+  "$comment": "Scene-operation registry. This is the verifier's view of the DSL: what each operation type is allowed to ask for. The compiler (Scene DSL owner) must implement exactly these types with these argument names; adding an operation means adding it here first. 'fact_bearing' operations put a number, formula or mathematical relationship on screen and therefore must name a claim_ref that the exact solver has verified (tokens for what is true, pixels for what it looks like). 'creates' means the operation introduces a new object id into the scene; 'refs' lists arguments that must name an existing object, optionally restricted to kinds.",
+  "registry_version": "ops-v1",
+  "operations": {
+    "highlight": {
+      "fact_bearing": false,
+      "args": { "object_id": { "type": "object_ref" } },
+      "required": ["object_id"],
+      "refs": { "object_id": null }
+    },
+    "unhighlight": {
+      "fact_bearing": false,
+      "args": { "object_id": { "type": "object_ref" } },
+      "required": ["object_id"],
+      "refs": { "object_id": null }
+    },
+    "set_narration": {
+      "fact_bearing": false,
+      "args": { "text": { "type": "string", "max_length": 600 } },
+      "required": ["text"],
+      "refs": {},
+      "$comment": "Narration may embed {{claim:cN}} placeholders; the verifier substitutes verified values and rejects any numeral that is not a placeholder or a scene constant."
+    },
+    "show_secant_sequence": {
+      "fact_bearing": true,
+      "args": {
+        "curve": { "type": "object_ref" },
+        "at_x": { "type": "number" },
+        "h_values": { "type": "number_array", "min_items": 2, "max_items": 12 },
+        "claim_ref": { "type": "claim_ref", "claim_types": ["secant_converges"] }
+      },
+      "required": ["curve", "at_x", "h_values", "claim_ref"],
+      "refs": { "curve": ["curve"] }
+    },
+    "draw_tangent": {
+      "fact_bearing": true,
+      "creates": "object_id",
+      "created_kind": "line",
+      "args": {
+        "object_id": { "type": "new_object_id" },
+        "curve": { "type": "object_ref" },
+        "at_x": { "type": "number" },
+        "claim_ref": { "type": "claim_ref", "claim_types": ["slope_tangent"] }
+      },
+      "required": ["object_id", "curve", "at_x", "claim_ref"],
+      "refs": { "curve": ["curve"] }
+    },
+    "draw_secant": {
+      "fact_bearing": true,
+      "creates": "object_id",
+      "created_kind": "line",
+      "args": {
+        "object_id": { "type": "new_object_id" },
+        "curve": { "type": "object_ref" },
+        "at_x": { "type": "number" },
+        "h": { "type": "number" },
+        "claim_ref": { "type": "claim_ref", "claim_types": ["slope_secant"] }
+      },
+      "required": ["object_id", "curve", "at_x", "h", "claim_ref"],
+      "refs": { "curve": ["curve"] }
+    },
+    "plot_function": {
+      "fact_bearing": true,
+      "creates": "object_id",
+      "created_kind": "curve",
+      "args": {
+        "object_id": { "type": "new_object_id" },
+        "expression": { "type": "expression" },
+        "var": { "type": "variable" },
+        "domain": { "type": "number_array", "min_items": 2, "max_items": 2 },
+        "claim_ref": { "type": "claim_ref", "claim_types": ["derivative", "equivalent"] }
+      },
+      "required": ["object_id", "expression", "var", "domain", "claim_ref"],
+      "refs": {},
+      "$comment": "The plotted expression must be symbolically equivalent to the referenced verified claim's result (e.g. the derivative of a scene curve)."
+    },
+    "annotate_value": {
+      "fact_bearing": true,
+      "creates": "object_id",
+      "created_kind": "label",
+      "args": {
+        "object_id": { "type": "new_object_id" },
+        "anchor": { "type": "object_ref" },
+        "label_text": { "type": "string", "max_length": 80 },
+        "claim_ref": { "type": "claim_ref", "claim_types": ["derivative", "value_at", "slope_tangent", "slope_secant", "limit"] }
+      },
+      "required": ["object_id", "anchor", "label_text", "claim_ref"],
+      "refs": { "anchor": null },
+      "$comment": "label_text must contain the {{claim:cN}} placeholder of its claim_ref; the verifier substitutes the verified value."
+    },
+    "add_label": {
+      "fact_bearing": false,
+      "creates": "object_id",
+      "created_kind": "label",
+      "args": {
+        "object_id": { "type": "new_object_id" },
+        "anchor": { "type": "object_ref" },
+        "text": { "type": "string", "max_length": 80, "no_numerals": true }
+      },
+      "required": ["object_id", "anchor", "text"],
+      "refs": { "anchor": null },
+      "$comment": "Free-text labels may not contain numerals or '='. A label that states a value must be an annotate_value with a claim_ref."
+    },
+    "remove_object": {
+      "fact_bearing": false,
+      "removes": "object_id",
+      "args": { "object_id": { "type": "object_ref" } },
+      "required": ["object_id"],
+      "refs": { "object_id": null },
+      "$comment": "Only objects with origin 'branch' may be removed; base-lesson objects are protected."
+    },
+    "zoom": {
+      "fact_bearing": false,
+      "args": { "region": { "type": "number_array", "min_items": 4, "max_items": 4 } },
+      "required": ["region"],
+      "refs": {}
+    }
+  }
+}

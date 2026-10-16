@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ivl.ekab-sons.dev/schemas/adaptation_plan.schema.json",
+  "title": "Adaptation proposal / clarification / failure (out of the learned boundary)",
+  "description": "The Lesson Adaptation Builder's typed response. A proposal is exactly that: nothing in it is applied until the Verification and Policy Layer accepts it.",
+  "oneOf": [
+    { "$ref": "#/$defs/proposal" },
+    { "$ref": "#/$defs/clarification" },
+    { "$ref": "#/$defs/failure" }
+  ],
+  "$defs": {
+    "operation": {
+      "type": "object",
+      "required": ["type"],
+      "properties": { "type": { "type": "string", "minLength": 1, "maxLength": 64 } },
+      "additionalProperties": true,
+      "description": "Argument requirements per type are defined in contracts/operations.json, not here, so the DSL owner can extend the registry without editing this schema."
+    },
+    "return_anchor": {
+      "type": "object",
+      "required": ["node_id", "scene_version"],
+      "properties": {
+        "node_id": { "type": "string", "minLength": 1 },
+        "scene_version": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "interpretation": {
+      "type": "object",
+      "required": ["question_summary", "referents"],
+      "properties": {
+        "question_summary": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "referents": {
+          "type": "array",
+          "description": "Scene object IDs the planner believes the question is about. Must be a subset of the live scene.",
+          "items": { "type": "string", "minLength": 1 },
+          "maxItems": 8
+        },
+        "misconception": { "type": "string", "maxLength": 300 }
+      },
+      "additionalProperties": false
+    },
+    "proposal": {
+      "type": "object",
+      "required": ["kind", "request_id", "planner_id", "config_version", "scene_version", "interpretation", "source_refs", "claims", "operations", "return_anchor"],
+      "properties": {
+        "kind": { "const": "adaptation_proposal" },
+        "request_id": { "type": "string", "minLength": 1 },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 2, "default": 1, "description": "1 for the first proposal, 2 for the single permitted revision (B.5)." },
+        "planner_id": { "type": "string", "minLength": 1 },
+        "config_version": { "type": "string", "minLength": 1 },
+        "model_version": { "type": "string" },
+        "scene_version": { "type": "integer", "minimum": 0, "description": "The scene version the proposal was generated against. Must equal the live version at acceptance time." },
+        "interpretation": { "$ref": "#/$defs/interpretation" },
+        "source_refs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 16 },
+        "claims": {
+          "type": "array",
+          "description": "Every fact-bearing assertion. Verified by the exact solver before anything that depends on it may be shown.",
+          "items": { "$ref": "claim.schema.json" },
+          "maxItems": 24
+        },
+        "operations": { "type": "array", "items": { "$ref": "#/$defs/operation" }, "minItems": 1, "maxItems": 40 },
+        "return_anchor": { "$ref": "#/$defs/return_anchor" }
+      },
+      "additionalProperties": false
+    },
+    "clarification": {
+      "type": "object",
+      "required": ["kind", "request_id", "status", "question"],
+      "properties": {
+        "kind": { "const": "clarification" },
+        "request_id": { "type": "string", "minLength": 1 },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "planner_id": { "type": "string" },
+        "config_version": { "type": "string" },
+        "status": { "const": "needs_clarification" },
+        "question": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "candidate_object_ids": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 8 }
+      },
+      "additionalProperties": false
+    },
+    "failure": {
+      "type": "object",
+      "required": ["kind", "request_id", "status", "reason"],
+      "properties": {
+        "kind": { "const": "failure" },
+        "request_id": { "type": "string", "minLength": 1 },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "planner_id": { "type": "string" },
+        "config_version": { "type": "string" },
+        "status": { "type": "string", "enum": ["cannot_answer", "out_of_scope", "provider_error", "timeout"] },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 500 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,1 +1,1 @@
-"""Showloop's local Prosit 1 lesson-interruption stub."""
+"""Showloop backend: verification, tools, safety, and the checked lesson-interruption demo."""

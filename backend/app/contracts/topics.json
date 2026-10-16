@@ -1,0 +1,22 @@
+{
+  "$comment": "Bounded topic set (B.7: scope the lessons, not the universe). A lesson or adaptation whose topic is not listed here is out of scope and is declined, not improvised. Each topic restricts which operations and claim types a planner may use, so the verifier can refuse anything it has no exact check for.",
+  "registry_version": "topics-v1",
+  "topics": {
+    "derivatives": {
+      "title": "Derivatives: tangent, secant and instantaneous rate of change",
+      "status": "implemented",
+      "allowed_operations": ["highlight", "unhighlight", "set_narration", "show_secant_sequence", "draw_tangent", "draw_secant", "plot_function", "annotate_value", "add_label", "remove_object", "zoom"],
+      "allowed_claim_types": ["derivative", "value_at", "slope_tangent", "slope_secant", "limit", "equivalent", "secant_converges"],
+      "allowed_functions": ["sin", "cos", "tan", "exp", "log", "sqrt", "Abs"],
+      "variables": ["x", "t"]
+    },
+    "python-loops": {
+      "title": "Programming: loops and accumulation (optional second area, B.7)",
+      "status": "deferred",
+      "allowed_operations": ["highlight", "unhighlight", "set_narration", "add_label", "remove_object", "zoom"],
+      "allowed_claim_types": [],
+      "allowed_functions": [],
+      "variables": []
+    }
+  }
+}
